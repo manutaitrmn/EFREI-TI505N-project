@@ -1,6 +1,4 @@
 package personne.physique.adherent;
 
-public class Donateur {
-
-
+public class President {
 }

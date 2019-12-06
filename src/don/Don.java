@@ -1,11 +1,16 @@
 package don;
 
-public abstract class Don {
+import personne.physique.adherent.Membre;
 
-    private static int registre;
+import java.util.Date;
 
-    private int id;
+public class Don extends Objet {
 
+    private Date date;
 
+    public Don(Membre donateur, int type, String description) {
+        super(donateur, type, description);
+        this.date = new Date();
+    }
 
 }
