@@ -1,14 +1,19 @@
 import don.Don;
 import don.DonAccepte;
+import don.DonStocke;
+import don.DonVendu;
+import javafx.scene.paint.Stop;
 import personne.Personne;
 import personne.morale.Association;
 import personne.morale.DepotVente;
 import personne.morale.Entrepot;
+import personne.morale.Morale;
 import personne.physique.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -688,21 +693,19 @@ public class Main {
         Scanner action = new Scanner(System.in);
         int nb = action.nextInt();
 
-        association.afficherTousLesDons();
-
         while (nb >= 1) {
 
             // Nouveau don
             if (nb == 1) {ajouterDon(association);}
 
-            // Afficher
+            // Accepter un don
             if (nb == 2) {accepterDon(association);}
 
-            // Ajouter
-            if (nb == 3) {}
+            // Stocker un don
+            if (nb == 3) {stockerDon(association);}
 
-            // Modifier
-            if (nb == 4) {}
+            // Don vendu
+            if (nb == 4) {vendreDon(association);}
 
             System.out.println("\nAccueil > Don");
             System.out.println("1 : Nouveau don \n2 : Accepter un don \n3 : Stocker un don \n4 : Don vendu/donnée \n0 : Retour");
@@ -719,36 +722,75 @@ public class Main {
         Scanner action = new Scanner(System.in);
         int nb = action.nextInt();
 
-        if (nb >= 0 && nb <= 1) {
+        if (nb <= 1) {
             if (nb == 1) {
-                int type;
+                int type = 0;
                 String desc;
                 int id;
+                boolean checkInput;
+
+                checkInput = false;
                 System.out.print("Type de don (entier, voir annexe): ");
                 action = new Scanner(System.in);
-                type = action.nextInt();
+                try {
+                    type = action.nextInt();
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (!checkInput) {
+                    System.out.println("\nVeuillez rentrer un type de don correcte!\n");
+                    System.out.print("Type de don (entier, voir annexe): ");
+                    action = new Scanner(System.in);
+                    try {
+                        type = action.nextInt();
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
                 System.out.print("Description: ");
                 action = new Scanner(System.in);
                 desc = action.nextLine();
+                while (desc.isEmpty()) {
+                    System.out.println("\nVeuillez rentrer une description!\n");
+                    System.out.print("Description: ");
+                    action = new Scanner(System.in);
+                    desc = action.nextLine();
+                }
+
+                checkInput = false;
                 Membre membre = null;
                 System.out.println("\nChoisir un donateur: ");
                 association.afficherTousLesMembres();
                 System.out.print("Id du donateur: ");
                 action = new Scanner(System.in);
-                id = action.nextInt();
-                membre = association.recupUnMembreParId(id);
-                while (membre == null) {
-                    System.out.println("\nChoisir un donateur: ");
-                    association.afficherTousLesMembres();
-                    System.out.println("** Veuillez rentrer un id correct! **");
-                    System.out.print("Id du donateur: ");
-                    action = new Scanner(System.in);
+                try {
                     id = action.nextInt();
                     membre = association.recupUnMembreParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
                 }
-                Don don = new Don(type, desc, membre);
+                while (membre == null || !checkInput) {
+                    System.out.println("\nVeuillez rentrer un id correct!\n");
+                    System.out.println("Choisir un donateur: ");
+                    association.afficherTousLesMembres();
+                    System.out.print("Id du donateur: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        membre = association.recupUnMembreParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                Don don = new Don(type, desc, membre, LocalDate.now());
                 association.ajouterUnDon(don);
-                System.out.println(don);
+                System.out.println("\nDon ajouté.");
             }
         } else {
             System.out.println("Veuillez resaisir correctement.");
@@ -765,48 +807,270 @@ public class Main {
 
         if (nb >= 0 && nb <= 1) {
             if (nb == 1) {
-                System.out.println("Choisir un don à accepter parmis ces dons:");
+                boolean checkInput;
+                int id;
+                Don don = null;
+                Adherent staff = null;
+
+                checkInput = false;
+                System.out.println("\nChoisir un don à accepter parmis ces dons:");
                 association.afficherTousLesDonsAjoutes();
-                System.out.print("Id du don: ");
+                System.out.print("Id du don (-1 pour quitter): ");
                 action = new Scanner(System.in);
-                int id = action.nextInt();
-                Don don = association.recupUnDonAjouteParId(id);
-                while (don == null) {
-                    System.out.println("\nId du don incorrect! ");
-                    System.out.println("Choisir un don à accepter parmis ces dons:");
-                    association.afficherTousLesDonsAjoutes();
-                    System.out.println("Rentrez un id correct!");
-                    System.out.print("Id du don: ");
-                    action = new Scanner(System.in);
+                try {
                     id = action.nextInt();
                     don = association.recupUnDonAjouteParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
                 }
+                while (don == null || !checkInput) {
+                    System.out.println("\nId du don incorrect!");
+                    System.out.println("\nChoisir un don à accepter parmis ces dons:");
+                    association.afficherTousLesDonsAjoutes();
+                    System.out.print("Id du don: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        don = association.recupUnDonAjouteParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                checkInput = false;
                 System.out.println("\nChoisir le staff qui traite la demande:");
                 association.afficherTousLesStaffs();
                 System.out.print("Id du staff: ");
                 action = new Scanner(System.in);
-                id = action.nextInt();
-                Adherent staff = association.recupUnStaffParId(id);
-                while (staff == null) {
-                    System.out.println("\nId du staff incorrect! ");
-                    System.out.println("Choisir le staff qui traite la demande:");
-                    association.afficherTousLesStaffs();
-                    System.out.println("Rentrez un id correct!");
-                    System.out.print("Id du staff: ");
-                    action = new Scanner(System.in);
+                try {
                     id = action.nextInt();
                     staff = association.recupUnStaffParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
                 }
+                while (staff == null || !checkInput) {
+                    System.out.println("\nId du staff incorrect!\n");
+                    System.out.println("Choisir le staff qui traite la demande:");
+                    association.afficherTousLesStaffs();
+                    System.out.print("Id du staff: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        staff = association.recupUnStaffParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
                 association.supprimerUnDon(don);
-                association.ajouterUnDon(new DonAccepte(don, staff));
+                association.ajouterUnDon(new DonAccepte(don, staff, LocalDate.now()));
                 System.out.println("Don accepté.");
                 accepterDon(association);
             }
         } else {
-            System.out.println("Veuillez resaisir correctement.");
+            System.out.println("Veuillez ressaisir correctement.");
             accepterDon(association);
         }
     }
+
+    public static void stockerDon(Association association) {
+        System.out.println("\nAccueil > Don > Stocker");
+        System.out.println("1 : Commencer \n0 : Retour");
+        System.out.print("\ninput: ");
+
+        Scanner action = new Scanner(System.in);
+        int nb = action.nextInt();
+
+        if (nb >= 0 && nb <= 1) {
+            if (nb == 1) {
+                boolean checkInput;
+                int id;
+                DonAccepte donAccepte = null;
+
+                checkInput = false;
+                System.out.println("Choisir un don à stocker parmis les dons acceptés:");
+                association.afficherTousLesDonsAcceptes();
+                System.out.print("Id du don: ");
+                action = new Scanner(System.in);
+                try {
+                    id = action.nextInt();
+                    donAccepte = association.recupUnDonAccepteParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (donAccepte == null || !checkInput) {
+                    System.out.println("\nId du don incorrect!\n");
+                    System.out.println("Choisir un don à stocker parmis les dons acceptés:");
+                    association.afficherTousLesDonsAcceptes();
+                    System.out.print("Id du don: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        donAccepte = association.recupUnDonAccepteParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                checkInput = false;
+                Morale destination = null;
+                System.out.println("\nChoisir la destination (association, dépôt-vente, entrepôt):");
+                association.afficherToutesLesDestinations();
+                System.out.print("Id de la destination: ");
+                action = new Scanner(System.in);
+                try {
+                    id = action.nextInt();
+                    destination = association.recupUneDestinationParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (destination == null || !checkInput) {
+                    System.out.println("\nId de la destination incorrect!");
+                    System.out.println("\nChoisir la destination (association, dépôt-vente, entrepôt):");
+                    association.afficherToutesLesDestinations();
+                    System.out.print("Id de la destination: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        destination = association.recupUneDestinationParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                association.supprimerUnDon(donAccepte);
+                Double prix = 0.0;
+                if (destination instanceof DepotVente) {
+
+                    checkInput = false;
+                    System.out.println("\nFixer un prix:");
+                    System.out.print("Prix (€): ");
+                    action = new Scanner(System.in);
+                    try {
+                        prix = action.nextDouble();
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                    while (!checkInput) {
+                        System.out.println("\nVeuillez saisir correctement le prix!");
+                        System.out.println("\nFixer un prix:");
+                        System.out.print("Prix (€): ");
+                        action = new Scanner(System.in);
+                        try {
+                            prix = action.nextDouble();
+                            checkInput = true;
+                        } catch (InputMismatchException e) {
+                            checkInput = false;
+                        }
+                    }
+
+                }
+
+                association.ajouterUnDon(new DonStocke(donAccepte, destination, prix, LocalDate.now()));
+                System.out.println("Don stocké.");
+                stockerDon(association);
+            }
+        } else {
+            System.out.println("Veuillez ressaisir correctement.");
+            stockerDon(association);
+        }
+    }
+
+    public static void vendreDon(Association association) {
+        System.out.println("\nAccueil > Don > Déclarer don vendu ou donné");
+        System.out.println("1 : Commencer \n0 : Retour");
+        System.out.print("\ninput: ");
+
+        Scanner action = new Scanner(System.in);
+        int nb = action.nextInt();
+
+        if (nb >= 0 && nb <= 1) {
+            if (nb == 1) {
+                boolean checkInput;
+                int id;
+                DonStocke donStocke = null;
+
+                checkInput = false;
+                System.out.println("Choisir un don à déclarer comme 'vendu/donné' parmis les dons stockés:");
+                association.afficherTousLesDonsStockes();
+                System.out.print("Id du don: ");
+                action = new Scanner(System.in);
+                try {
+                    id = action.nextInt();
+                    donStocke = association.recupUnDonStockeParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (donStocke == null || !checkInput) {
+                    System.out.println("\nId du don incorrect!\n");
+                    System.out.println("Choisir un don à déclarer comme 'vendu/donné' parmis les dons stockés:");
+                    association.afficherTousLesDonsAcceptes();
+                    System.out.print("Id du don: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        donStocke = association.recupUnDonStockeParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                checkInput = false;
+                Beneficiaire beneficiaire = null;
+                System.out.println("\nChoisir le bénéficiaire du don:");
+                association.afficherTousLesBeneficiaires();
+                System.out.print("Id du bénéficiaire: ");
+                action = new Scanner(System.in);
+                try {
+                    id = action.nextInt();
+                    beneficiaire = association.recupUnBeneficiaireParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (beneficiaire == null || !checkInput) {
+                    System.out.println("\nId du bénéficiaire incorrect!");
+                    System.out.println("\nChoisir le bénéficiaire du don:");
+                    association.afficherTousLesBeneficiaires();
+                    System.out.print("Id du bénéficiaire: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        beneficiaire = association.recupUnBeneficiaireParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                association.supprimerUnDon(donStocke);
+
+                Morale destination = donStocke.getDestination();
+                if (destination instanceof DepotVente) {
+                    ((DepotVente)destination).ajouterAuSolde(donStocke.getMontant());
+                }
+
+                association.ajouterUnDon(new DonVendu(donStocke, beneficiaire, LocalDate.now()));
+                System.out.println("Don vendu.");
+                vendreDon(association);
+            }
+        } else {
+            System.out.println("Veuillez ressaisir correctement.");
+            vendreDon(association);
+        }
+    }
+
     // FONCTIONS UTILES
 
     private static void promptEnterKey(){

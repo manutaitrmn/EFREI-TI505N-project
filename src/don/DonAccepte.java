@@ -11,9 +11,9 @@ public class DonAccepte extends Don {
 
     protected Adherent staff;
 
-    public DonAccepte(Don don, Adherent staff) {
-        super(don.type, don.description, don.donateur);
-        dateTraitement = LocalDate.now();
+    public DonAccepte(Don don, Adherent staff, LocalDate dateTraitement) {
+        super(don.type, don.description, don.donateur, don.dateDon);
+        this.dateTraitement = dateTraitement;
         this.staff = staff;
     }
 

@@ -28,6 +28,16 @@ public class Association extends Morale {
         super(nom, adresse, tel);
     }
 
+    @Override
+    public String toString() {
+        return "id: " + id +
+                ", nom: " + nom +
+                ", tel: " + tel +
+                ", adresse: " + adresse +
+                ", statut: association"
+                ;
+    }
+
     // GLOBAL
 
     public void afficherToutesLesPersonnes() {
@@ -72,9 +82,9 @@ public class Association extends Morale {
     }
 
     public LinkedList<Adherent> recupTousLesStaffs() {
-        LinkedList<Adherent> allStaff = recupTousLesAdherents();
-        for (Adherent a : allStaff) {
-            if ((a instanceof Tresorier) && (a instanceof President)) {
+        LinkedList<Adherent> allStaff = new LinkedList<Adherent>();
+        for (Adherent a : recupTousLesAdherents()) {
+            if (!(a instanceof Membre)) {
                 allStaff.add(a);
             }
         }
@@ -151,6 +161,42 @@ public class Association extends Morale {
     public void afficherTousLesBeneficiaires() {
         for (Beneficiaire b : beneficiaires) {
             System.out.println(b);
+        }
+    }
+
+    public LinkedList<Morale> recupToutesLesDestinations() {
+        LinkedList<Morale> destinations = new LinkedList<Morale>();
+        destinations.add(this);
+        for (DepotVente d : recupTousLesDepotVentes()) {
+            destinations.add(d);
+        }
+        for (Entrepot e : recupTousLesEntrepots()) {
+            destinations.add(e);
+        }
+        return destinations;
+    }
+
+    public Morale recupUneDestinationParId(int id) {
+        Morale destination = null;
+        for (Morale m : recupToutesLesDestinations()) {
+            if (m.getId() == id) {
+                destination = m;
+            }
+        }
+        return destination;
+    }
+
+    public void afficherToutesLesDestinations() {
+        for (Morale m : recupToutesLesDestinations()) {
+            if (m instanceof Association) {
+                System.out.println((Association)m);
+            }
+            if (m instanceof DepotVente) {
+                System.out.println((DepotVente)m);
+            }
+            if (m instanceof Entrepot) {
+                System.out.println((Entrepot)m);
+            }
         }
     }
 
@@ -234,6 +280,13 @@ public class Association extends Morale {
         return donsAjoutes;
     }
 
+    public void afficherTousLesDonsAjoutes() {
+        LinkedList<Don> donsAjoutes = recupTousLesDonsAjoutes();
+        for (Don don : donsAjoutes) {
+            System.out.println(don);
+        }
+    }
+
     public Don recupUnDonAjouteParId(int id) {
         Don don = null;
         for (Don d : recupTousLesDonsAjoutes()) {
@@ -242,13 +295,6 @@ public class Association extends Morale {
             }
         }
         return don;
-    }
-
-    public void afficherTousLesDonsAjoutes() {
-        LinkedList<Don> donsAjoutes = recupTousLesDonsAjoutes();
-        for (Don don : donsAjoutes) {
-            System.out.println(don);
-        }
     }
 
     public LinkedList<DonAccepte> recupTousLesDonsAcceptes() {
@@ -268,6 +314,16 @@ public class Association extends Morale {
         }
     }
 
+    public DonAccepte recupUnDonAccepteParId(int id) {
+        DonAccepte donAccepte = null;
+        for (DonAccepte d : recupTousLesDonsAcceptes()) {
+            if (d.getId() == id) {
+                donAccepte = d;
+            }
+        }
+        return donAccepte;
+    }
+
     public LinkedList<DonStocke> recupTousLesDonsStockes() {
         LinkedList<DonStocke> donsStockes = new LinkedList<DonStocke>();
         for (Don don : dons) {
@@ -281,8 +337,18 @@ public class Association extends Morale {
     public void afficherTousLesDonsStockes() {
         LinkedList<DonStocke> donsStockes = recupTousLesDonsStockes();
         for (DonStocke donStocke : donsStockes) {
-            System.out.println(donsStockes);
+            System.out.println(donStocke);
         }
+    }
+
+    public DonStocke recupUnDonStockeParId(int id) {
+        DonStocke donStocke = null;
+        for (DonStocke d : recupTousLesDonsStockes()) {
+            if (d.getId() == id) {
+                donStocke = d;
+            }
+        }
+        return donStocke;
     }
 
     public LinkedList<DonVendu> recupTousLesDonsVendus() {

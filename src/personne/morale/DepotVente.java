@@ -17,6 +17,7 @@ public class DepotVente extends Morale {
                 ", nom: " + nom +
                 ", tel: " + tel +
                 ", adresse: " + adresse +
+                ", solde: " + solde + "€" +
                 ", statut: dépôt-vente"
                 ;
     }

@@ -13,10 +13,10 @@ public class DonVendu extends DonStocke {
 
     protected Beneficiaire beneficiaire;
 
-    public DonVendu(DonStocke donStocke, Beneficiaire beneficiaire) {
-        super(donStocke, donStocke.destination, donStocke.montant);
+    public DonVendu(DonStocke donStocke, Beneficiaire beneficiaire, LocalDate dateVente) {
+        super(donStocke, donStocke.destination, donStocke.montant, donStocke.dateDeDepot);
         this.beneficiaire = beneficiaire;
-        dateVente = LocalDate.now();
+        this.dateVente = dateVente;
     }
 
     @Override

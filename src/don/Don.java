@@ -18,12 +18,12 @@ public class Don {
 
     protected Membre donateur;
 
-    public Don(int type, String description, Membre donateur) {
+    public Don(int type, String description, Membre donateur, LocalDate dateDon) {
         id = registre;
         this.type = type;
         this.description = description;
         registre++;
-        dateDon = LocalDate.now();
+        this.dateDon = dateDon;
         this.donateur = donateur;
     }
 

@@ -14,11 +14,11 @@ public class DonStocke extends DonAccepte {
     protected double montant;
 
 
-    public DonStocke(DonAccepte donAccepte, Morale destination, double montant) {
-        super(donAccepte, donAccepte.staff);
+    public DonStocke(DonAccepte donAccepte, Morale destination, double montant, LocalDate dateDeDepot) {
+        super(donAccepte, donAccepte.staff, donAccepte.dateTraitement);
         this.destination = destination;
         this.montant = montant;
-        dateDeDepot = LocalDate.now();
+        this.dateDeDepot = dateDeDepot;
     }
 
     @Override
@@ -34,5 +34,13 @@ public class DonStocke extends DonAccepte {
                 ", destination: " + destination.getId() +
                 ", montant: " + montant + "€" +
                 ", statut: stocké";
+    }
+
+    public Morale getDestination() {
+        return destination;
+    }
+
+    public double getMontant() {
+        return montant;
     }
 }
