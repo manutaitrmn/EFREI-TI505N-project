@@ -1,7 +1,4 @@
-import don.Don;
-import don.DonAccepte;
-import don.DonStocke;
-import don.DonVendu;
+import don.*;
 import javafx.scene.paint.Stop;
 import personne.Personne;
 import personne.morale.Association;
@@ -12,6 +9,7 @@ import personne.physique.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.LinkedList;
@@ -43,7 +41,7 @@ public class Main {
 
     private static void accueil(Association association) {
         System.out.println("\nAccueil");
-        System.out.println("1 : Personne \n2 : Don \n3 : Recherche \n4 : Statistiques \n5 : Autre \n0 : Quitter");
+        System.out.println("1 : Personne \n2 : Don \n3 : Recherche de dons \n4 : Statistiques \n0 : Quitter");
         System.out.print("\ninput: ");
         Scanner action = (new Scanner(System.in));
         int nb = action.nextInt();
@@ -55,17 +53,14 @@ public class Main {
             // Module Don
             if (nb == 2) {don(association);}
 
-            // Module Recherche
-            if (nb == 3) {}
+            // Module Recherche de dons
+            if (nb == 3) {recherche(association );}
 
             // Module Statistiques
-            if (nb == 4) {}
-
-            // Module Autre
-            if (nb == 5) {}
+            if (nb == 4) {statistique(association);}
 
             System.out.println("\nAccueil");
-            System.out.println("1 : Personne \n2 : Don \n3 : Recherche \n4 : Statistiques \n5 : Autre \n0 : Quitter");
+            System.out.println("1 : Personne \n2 : Don \n3 : Recherche de dons \n4 : Statistiques \n5 : Autre \n0 : Quitter");
             System.out.print("\ninput: ");
             action = (new Scanner(System.in));
             nb = action.nextInt();
@@ -688,7 +683,7 @@ public class Main {
 
     private static void don(Association association) {
         System.out.println("\nAccueil > Don");
-        System.out.println("1 : Nouveau don \n2 : Accepter un don \n3 : Stocker un don \n4 : Don vendu/donnée \n0 : Retour");
+        System.out.println("1 : Nouveau don \n2 : Accepter un don \n3 : Refuser un don \n4 : Stocker un don \n5 : Don vendu/donnée \n0 : Retour");
         System.out.print("\ninput: ");
         Scanner action = new Scanner(System.in);
         int nb = action.nextInt();
@@ -701,14 +696,17 @@ public class Main {
             // Accepter un don
             if (nb == 2) {accepterDon(association);}
 
+            // Refuser un don
+            if (nb == 3) {refuserDon(association);}
+
             // Stocker un don
-            if (nb == 3) {stockerDon(association);}
+            if (nb == 4) {stockerDon(association);}
 
             // Don vendu
-            if (nb == 4) {vendreDon(association);}
+            if (nb == 5) {vendreDon(association);}
 
             System.out.println("\nAccueil > Don");
-            System.out.println("1 : Nouveau don \n2 : Accepter un don \n3 : Stocker un don \n4 : Don vendu/donnée \n0 : Retour");
+            System.out.println("1 : Nouveau don \n2 : Accepter un don \n3 : Refuser un don \n4 : Stocker un don \n5 : Don vendu/donnée \n0 : Retour");
             System.out.print("\ninput: ");
             action = new Scanner(System.in);
             nb = action.nextInt();
@@ -874,6 +872,85 @@ public class Main {
         } else {
             System.out.println("Veuillez ressaisir correctement.");
             accepterDon(association);
+        }
+    }
+
+    public static void refuserDon(Association association) {
+        System.out.println("\nAccueil > Don > Refuser");
+        System.out.println("1 : Commencer \n0 : Retour");
+        System.out.print("\ninput: ");
+        Scanner action = new Scanner(System.in);
+        int nb = action.nextInt();
+
+        if (nb >= 0 && nb <= 1) {
+            if (nb == 1) {
+                boolean checkInput;
+                int id;
+                Don don = null;
+                Adherent staff = null;
+
+                checkInput = false;
+                System.out.println("\nChoisir un don à refuser parmis ces dons:");
+                association.afficherTousLesDonsAjoutes();
+                System.out.print("Id du don (-1 pour quitter): ");
+                action = new Scanner(System.in);
+                try {
+                    id = action.nextInt();
+                    don = association.recupUnDonAjouteParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (don == null || !checkInput) {
+                    System.out.println("\nId du don incorrect!");
+                    System.out.println("\nChoisir un don à refuser parmis ces dons:");
+                    association.afficherTousLesDonsAjoutes();
+                    System.out.print("Id du don: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        don = association.recupUnDonAjouteParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                checkInput = false;
+                System.out.println("\nChoisir le staff qui traite la demande:");
+                association.afficherTousLesStaffs();
+                System.out.print("Id du staff: ");
+                action = new Scanner(System.in);
+                try {
+                    id = action.nextInt();
+                    staff = association.recupUnStaffParId(id);
+                    checkInput = true;
+                } catch (InputMismatchException e) {
+                    checkInput = false;
+                }
+                while (staff == null || !checkInput) {
+                    System.out.println("\nId du staff incorrect!\n");
+                    System.out.println("Choisir le staff qui traite la demande:");
+                    association.afficherTousLesStaffs();
+                    System.out.print("Id du staff: ");
+                    action = new Scanner(System.in);
+                    try {
+                        id = action.nextInt();
+                        staff = association.recupUnStaffParId(id);
+                        checkInput = true;
+                    } catch (InputMismatchException e) {
+                        checkInput = false;
+                    }
+                }
+
+                association.supprimerUnDon(don);
+                association.ajouterUnDon(new DonRefuse(don, staff, LocalDate.now()));
+                System.out.println("Don refusé.");
+                refuserDon(association);
+            }
+        } else {
+            System.out.println("Veuillez ressaisir correctement.");
+            refuserDon(association);
         }
     }
 
@@ -1068,6 +1145,142 @@ public class Main {
         } else {
             System.out.println("Veuillez ressaisir correctement.");
             vendreDon(association);
+        }
+    }
+
+    // MODULE RECHERCHE
+
+    private static void recherche(Association association) {
+        System.out.println("\nAccueil > Recherche de don");
+        System.out.println("1 : Dons supprimés \n2 : Dons en cours de traitement \n3 : Dons vendus \n4 : Dons donnés \n5 : Dons stockés par entrepôt \n6 : Dons stockés par dépôt-vente \n0 : Retour");
+        System.out.print("\ninput: ");
+        Scanner action = new Scanner(System.in);
+        int nb = action.nextInt();
+
+        while (nb >= 1) {
+
+            // Dons supprimés
+            if (nb == 1) {
+                System.out.println("\nRecherche les dons stockés:");
+                association.afficherTousLesDonsRefuses();
+            }
+
+            // Dons en cours de traitement
+            if (nb == 2) {
+                System.out.println("\nRecherche les dons en traitement (accepté ou stockés):");
+                association.afficherTousLesDonsAcceptes();
+                association.afficherTousLesDonsStockes();
+            }
+
+            // Dons vendus
+            if (nb == 3) {
+                System.out.println("\nRecherche les dons vendus:");
+                association.afficherTousLesDonsVendus();
+            }
+
+            // Dons donnés
+            if (nb == 4) {
+                System.out.println("\nRecherche les dons donnés:");
+                association.afficherTousLesDonsDonnes();
+            }
+
+            // Dons stockés par entrepôt
+            if (nb == 5) {
+                System.out.println("\nRecherche les dons stockés par entrepôt:");
+                for (DonStocke donStocke : association.recupTousLesDonsStockes()) {
+                    if (donStocke.getDestination() instanceof Entrepot) {
+                        System.out.println(donStocke);
+                    }
+                }
+            }
+
+            // Dons stockés par dépot
+            if (nb == 6) {
+                System.out.println("\nRecherche les dons stockés par dépôt-vente:");
+                for (DonStocke donStocke : association.recupTousLesDonsStockes()) {
+                    if (donStocke.getDestination() instanceof DepotVente) {
+                        System.out.println(donStocke);
+                    }
+                }
+            }
+            promptEnterKey();
+
+            System.out.println("\nAccueil > Recherche de don");
+            System.out.println("1 : Dons supprimés \n2 : Dons en cours de traitement \n3 : Dons vendus \n4 : Dons donnés \n5 : Dons stockés par entrepôt \n6 : Dons stockés par dépôt-vente \n0 : Retour");
+            System.out.print("\ninput: ");
+            action = new Scanner(System.in);
+            nb = action.nextInt();
+        }
+    }
+
+    // MODULE STATISTIQUE
+
+    private static void statistique(Association association) {
+        System.out.println("\nAccueil > Statistiques");
+        System.out.println("1 : Calculer la moyenne de temps entre la date de réception et la date de retrait des dons dans les zones de stockage");
+        System.out.println("2 : Calculer la moyenne de prix des objets dans les dépôts-ventes");
+        System.out.println("3 : Calculez la moyenne d’âge des bénéficiaires");
+        System.out.println("0 : Retour");
+        System.out.print("\ninput: ");
+        Scanner action = new Scanner(System.in);
+        int nb = action.nextInt();
+
+        while (nb >= 1) {
+
+            if (nb == 1) {
+                Double moyenne = 0.0;
+                Double cpt = 0.0;
+                for (DonVendu donVendu : association.recupTousLesDonsVendusOuDonnes()) {
+                    moyenne += Period.between(donVendu.getDateDeDepot(), donVendu.getDateVente()).getDays();
+                    cpt++;
+                }
+                Double result = Math.floor(moyenne / cpt * 100) / 100;
+                if (result.isNaN()) {
+                    result = 0.0;
+                }
+                System.out.println("\nMoyenne de temps entre la date de réception et la date de retrait des dons dans les zones de stockage: " + result + " jours");
+            }
+
+            if (nb == 2) {
+                Double moyenne = 0.0;
+                Double cpt = 0.0;
+                for (Don don : association.recupTousLesDons()) {
+                    if (don instanceof DonStocke) {
+                        moyenne += ((DonStocke) don).getMontant();
+                        cpt++;
+                    }
+                }
+                Double result = moyenne / cpt;
+                if (result.isNaN()) {
+                    result = 0.0;
+                }
+                System.out.println("\nMoyenne de prix dans les dépôts-ventes: " + result + "€");
+            }
+
+            if (nb == 3) {
+                Double moyenne = 0.0;
+                Double cpt = 0.0;
+                for (Beneficiaire beneficiaire : association.recupTousLesBeneficiaires()) {
+                    moyenne += Period.between(beneficiaire.getDateNaissance(), LocalDate.now()).getYears();
+                    cpt++;
+                }
+                Double result = Math.floor(moyenne / cpt * 100) / 100;
+                if (result.isNaN()) {
+                    result = 0.0;
+                }
+                System.out.println("\nMoyenne d'âge des bénéficiaires: " + result + " ans");
+            }
+
+            promptEnterKey();
+
+            System.out.println("\nAccueil > Statistiques");
+            System.out.println("1 : Calculer la moyenne de temps entre la date de réception et la date de retrait des dons dans les zones de stockage");
+            System.out.println("2 : Calculer la moyenne de prix des objets dans les dépôts-ventes");
+            System.out.println("3 : Calculez la moyenne d’âge des bénéficiaires");
+            System.out.println("0 : Retour");
+            System.out.print("\ninput: ");
+            action = new Scanner(System.in);
+            nb = action.nextInt();
         }
     }
 

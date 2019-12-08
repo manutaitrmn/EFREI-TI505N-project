@@ -43,4 +43,8 @@ public class DonStocke extends DonAccepte {
     public double getMontant() {
         return montant;
     }
+
+    public LocalDate getDateDeDepot() {
+        return dateDeDepot;
+    }
 }

@@ -1,9 +1,6 @@
 package personne.morale;
 
-import don.Don;
-import don.DonAccepte;
-import don.DonStocke;
-import don.DonVendu;
+import don.*;
 import personne.physique.*;
 
 import java.io.BufferedReader;
@@ -270,6 +267,28 @@ public class Association extends Morale {
         dons.remove(don);
     }
 
+    public LinkedList<Don> recupTousLesDons() {
+        return (LinkedList<Don>) dons;
+    }
+
+    public void afficherTousLesDons() {
+        for (Don don : dons) {
+            if (don instanceof DonVendu) {
+                System.out.println((DonVendu) don);
+            } else if (don instanceof DonStocke) {
+                System.out.println((DonStocke) don);
+            } else if (don instanceof DonAccepte) {
+                System.out.println((DonAccepte) don);
+            } else {
+                System.out.println(don);
+            }
+        }
+    }
+
+    public void afficherUnDonParId(int id) {
+
+    }
+
     public LinkedList<Don> recupTousLesDonsAjoutes() {
         LinkedList<Don> donsAjoutes = new LinkedList<Don>();
         for (Don don : dons) {
@@ -324,6 +343,22 @@ public class Association extends Morale {
         return donAccepte;
     }
 
+    public LinkedList<DonRefuse> recupTousLesDonsRefuses() {
+        LinkedList<DonRefuse> donsRefuses = new LinkedList<DonRefuse>();
+        for (Don don : dons) {
+            if (don instanceof DonRefuse) {
+                donsRefuses.add((DonRefuse) don);
+            }
+        }
+        return donsRefuses;
+    }
+
+    public void afficherTousLesDonsRefuses() {
+        for (DonRefuse donRefuse : recupTousLesDonsRefuses()) {
+            System.out.println(donRefuse);
+        }
+    }
+
     public LinkedList<DonStocke> recupTousLesDonsStockes() {
         LinkedList<DonStocke> donsStockes = new LinkedList<DonStocke>();
         for (Don don : dons) {
@@ -351,33 +386,55 @@ public class Association extends Morale {
         return donStocke;
     }
 
+    public LinkedList<DonVendu> recupTousLesDonsVendusOuDonnes() {
+        LinkedList<DonVendu> donsVendusOuDonnes = new LinkedList<DonVendu>();
+        for (Don don : dons) {
+            if ((don instanceof DonVendu)) {
+                donsVendusOuDonnes.add((DonVendu) don);
+            }
+        }
+        return donsVendusOuDonnes;
+    }
+
+    public void afficherTousLesDonsVendusOuDonnes() {
+        LinkedList<DonVendu> donsVendus = recupTousLesDonsVendusOuDonnes();
+        for (DonVendu donVendu : donsVendus) {
+            System.out.println(donVendu);
+        }
+    }
+
     public LinkedList<DonVendu> recupTousLesDonsVendus() {
         LinkedList<DonVendu> donsVendus = new LinkedList<DonVendu>();
         for (Don don : dons) {
             if ((don instanceof DonVendu)) {
+                if (((DonVendu)don).getMontant() > 0)
                 donsVendus.add((DonVendu) don);
             }
         }
         return donsVendus;
     }
 
-    public void afficherTousLesDons() {
-        for (Don don : dons) {
-            if (don instanceof DonVendu) {
-                System.out.println((DonVendu) don);
-            } else if (don instanceof DonStocke) {
-                System.out.println((DonStocke) don);
-            } else if (don instanceof DonAccepte) {
-                System.out.println((DonAccepte) don);
-            } else {
-                System.out.println(don);
-            }
-        }
-    }
-
     public void afficherTousLesDonsVendus() {
         LinkedList<DonVendu> donsVendus = recupTousLesDonsVendus();
         for (DonVendu donVendu : donsVendus) {
+            System.out.println(donVendu);
+        }
+    }
+
+    public LinkedList<DonVendu> recupTousLesDonsDonnes() {
+        LinkedList<DonVendu> donsDonnes = new LinkedList<DonVendu>();
+        for (Don don : dons) {
+            if ((don instanceof DonVendu)) {
+                if (((DonVendu)don).getMontant() == 0)
+                    donsDonnes.add((DonVendu) don);
+            }
+        }
+        return donsDonnes;
+    }
+
+    public void afficherTousLesDonsDonnes() {
+        LinkedList<DonVendu> donsDonnes = recupTousLesDonsDonnes();
+        for (DonVendu donVendu : donsDonnes) {
             System.out.println(donVendu);
         }
     }

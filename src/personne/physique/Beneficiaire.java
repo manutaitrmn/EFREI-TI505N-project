@@ -25,6 +25,10 @@ public class Beneficiaire extends Personne {
         this.dateNaissance = dateNaissance;
     }
 
+    public LocalDate getDateNaissance() {
+        return dateNaissance;
+    }
+
     @Override
     public String toString() {
         return "id: " + id +

@@ -19,6 +19,14 @@ public class DonVendu extends DonStocke {
         this.dateVente = dateVente;
     }
 
+    public LocalDate getDateVente() {
+        return dateVente;
+    }
+
+    public Beneficiaire getBeneficiaire() {
+        return beneficiaire;
+    }
+
     @Override
     public String toString() {
         return "id: " + id +
