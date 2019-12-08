@@ -1,11 +1,6 @@
 import don.*;
-import javafx.scene.paint.Stop;
-import personne.Personne;
-import personne.morale.Association;
-import personne.morale.DepotVente;
-import personne.morale.Entrepot;
-import personne.morale.Morale;
-import personne.physique.*;
+import personne.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;

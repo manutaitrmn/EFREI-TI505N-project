@@ -1,4 +1,4 @@
-package personne.physique;
+package personne;
 
 public class Tresorier extends Adherent {
 

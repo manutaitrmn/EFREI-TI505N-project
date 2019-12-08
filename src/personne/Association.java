@@ -1,7 +1,6 @@
-package personne.morale;
+package personne;
 
 import don.*;
-import personne.physique.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

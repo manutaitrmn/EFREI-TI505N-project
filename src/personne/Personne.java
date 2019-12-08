@@ -1,10 +1,5 @@
 package personne;
 
-import personne.physique.Beneficiaire;
-import personne.physique.Membre;
-import personne.physique.President;
-import personne.physique.Tresorier;
-
 public abstract class Personne {
 
     private static int registre = 0;

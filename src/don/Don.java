@@ -1,8 +1,7 @@
 package don;
 
-import personne.physique.Membre;
+import personne.Membre;
 import java.time.LocalDate;
-import java.util.Arrays;
 
 public class Don {
 

@@ -1,6 +1,6 @@
 package don;
 
-import personne.physique.Adherent;
+import personne.Adherent;
 
 import java.time.LocalDate;
 

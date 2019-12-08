@@ -1,7 +1,6 @@
 package don;
 
-import personne.morale.Morale;
-import personne.physique.Adherent;
+import personne.Morale;
 
 import java.time.LocalDate;
 

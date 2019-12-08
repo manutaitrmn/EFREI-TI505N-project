@@ -1,9 +1,6 @@
 package don;
 
-import personne.morale.Morale;
-import personne.physique.Adherent;
-import personne.physique.Beneficiaire;
-import personne.physique.Membre;
+import personne.Beneficiaire;
 
 import java.time.LocalDate;
 

@@ -1,6 +1,4 @@
-package personne.morale;
-
-import personne.Personne;
+package personne;
 
 public class DepotVente extends Morale {
 

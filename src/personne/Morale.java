@@ -1,4 +1,4 @@
-package personne.morale;
+package personne;
 
 import personne.Personne;
 

@@ -1,8 +1,8 @@
-package personne.physique;
+package personne;
 
-public class Membre extends Adherent {
+public class President extends Adherent {
 
-    public Membre(String nom, String prenom, String adresse, String tel) {
+    public President(String nom, String prenom, String adresse, String tel) {
         super(nom, prenom, adresse, tel);
     }
 
@@ -13,7 +13,7 @@ public class Membre extends Adherent {
                 ", prenom: " + prenom +
                 ", tel: " + tel +
                 ", adresse: " + adresse +
-                ", statut: membre"
+                ", statut: président"
                 ;
     }
 }
