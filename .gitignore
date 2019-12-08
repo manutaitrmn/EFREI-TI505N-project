@@ -21,7 +21,7 @@ tomcat
 .classpath
 .project
 
-# IntelliJ project files
+# IntelliJ project fichier
 *.iml
 *.iws
 *.ipr

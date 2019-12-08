@@ -1,16 +1,60 @@
 package don;
 
-import personne.physique.adherent.Membre;
+import personne.physique.Membre;
+import java.time.LocalDate;
+import java.util.Arrays;
 
-import java.util.Date;
+public class Don {
 
-public class Don extends Objet {
+    private static int registre = 0;
 
-    private Date date;
+    protected int id;
 
-    public Don(Membre donateur, int type, String description) {
-        super(donateur, type, description);
-        this.date = new Date();
+    protected int type;
+
+    protected String description;
+
+    protected LocalDate dateDon;
+
+    protected Membre donateur;
+
+    public Don(int type, String description, Membre donateur) {
+        id = registre;
+        this.type = type;
+        this.description = description;
+        registre++;
+        dateDon = LocalDate.now();
+        this.donateur = donateur;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public LocalDate getDateDon() {
+        return dateDon;
+    }
+
+    public Membre getDonateur() {
+        return donateur;
+    }
+
+    @Override
+    public String toString() {
+        return "id: " + id +
+                ", type: " + type +
+                ", description: " + description +
+                ", date du don: " + String.format("%02d", dateDon.getDayOfMonth()) + "/" + String.format("%02d", dateDon.getMonthValue()) + "/" + dateDon.getYear() +
+                ", donateur: " + donateur.getId() +
+                ", statut: nouveau";
+    }
 }
+
