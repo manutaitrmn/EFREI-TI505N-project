@@ -1,3 +1,5 @@
+package main;
+
 import don.*;
 import personne.*;
 

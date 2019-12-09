@@ -278,14 +278,12 @@ public class Association extends Morale {
                 System.out.println((DonStocke) don);
             } else if (don instanceof DonAccepte) {
                 System.out.println((DonAccepte) don);
+            } else if (don instanceof DonRefuse) {
+                System.out.println((DonRefuse)don);
             } else {
                 System.out.println(don);
             }
         }
-    }
-
-    public void afficherUnDonParId(int id) {
-
     }
 
     public LinkedList<Don> recupTousLesDonsAjoutes() {
